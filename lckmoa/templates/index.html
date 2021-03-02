@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+
+    <!-- 캐러셀 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+    <title>LCK 모아</title>
+
+    <!-- 구글폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+
+
+
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        html, body {
+            margin: 0; /* 화면 외곽에 여백 없애기 꽉 채우기 */
+        }
+
+        nav {
+            background-color: white;
+            height: 70px;
+            font-size: 40px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+
+        .menu {
+            display: flex;
+            justify-content: space-between;
+            flex: 0 0 50px;
+            background: gray;
+            font-weight: bold;
+            margin: 0;
+            color: black;
+        }
+
+        .tab {
+            position: relative;
+            display: block;
+            line-height: 60px;
+            padding: 0 15px;
+        }
+
+        .carousel-item img {
+            display: flex;
+            width: calc(100vw - 5%);
+            height: calc(100vh - 500px);
+            max-height: calc(100vh - 500px);
+            object-fit: cover;
+            overflow: hidden;
+        }
+
+        section {
+            background-color: bisque;
+            height: calc(100vh - 60px); /* 남은 여백만큼 높이 주기 */
+            display: flex; /* flex-container */
+            flex-direction: row; /* flex-item을 row로 정렬 */
+        }
+
+        .schedule_month_wrap {
+            width: calc(100vw - 300px); /* 나머지를 폭으로 주기 */
+            display: flex; /
+            flex-direction: row; /* 정렬 방향 */
+            /*flex-wrap: wrap; !* 넘치면 다음 줄로 내려가기 *!*/
+            justify-content: flex-start; /* 적절히 공간을 배치 */
+            background-color: white;
+        }
+
+
+
+    </style>
+
+    <script>
+
+        $('.carousel').carousel({
+            interval: 2000 //기본 5초
+        })
+
+    </script>
+</head>
+
+<body>
+<nav>
+    <a class="page_name"> LCK모아 </a>
+</nav>
+<ul class="menu">
+    <li>
+        <a href="#" class="tab selected">LCK 기사</a>
+        <!-- 기사 페이지로 넘어가도록 하기 -->
+    </li>
+    <li>
+        <a href="#" class="tab">구단 정보</a>
+        <!-- 구단 정보 페이지로 넘어가도록 하기 -->
+    </li>
+    <li>
+        <a href="#" class="tab">하이라이트</a>
+        <!-- 하이라이트 영상 페이지로 넘어가도록 하기 -->
+    </li>
+</ul>
+
+<div id="demo" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <!-- 슬라이드 쇼 -->
+        <div class="carousel-item active">
+            <!--가로-->
+            <img class="d-block w-100"
+                 src="https://img9.yna.co.kr/etc/inner/KR/2019/04/14/AKR20190414019400017_02_i_P4.jpg"
+                 alt="First slide">
+            <div class="carousel-caption d-none d-md-block">
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100"
+                 src="https://image.fmkorea.com/files/attach/new/20201101/14339012/47592066/3175559973/755ff91e0b08ea642400c0d3720a3e34.jpg"
+                 alt="Second slide">
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100"
+                 src="https://pbs.twimg.com/media/DIkdi1dVoAARMXe.jpg"
+                 alt="Third slide">
+        </div>
+        <!-- / 슬라이드 쇼 끝 -->
+
+        <!-- 왼쪽 오른쪽 화살표 버튼 -->
+        <a class="carousel-control-prev" href="#demo" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <!-- <span>Previous</span> -->
+        </a>
+        <a class="carousel-control-next" href="#demo" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <!-- <span>Next</span> -->
+        </a>
+        <!-- / 화살표 버튼 끝 -->
+
+        <!-- 인디케이터 -->
+        <ul class="carousel-indicators">
+            <li data-target="#demo" data-slide-to="0" class="active"></li>
+            <!--0번부터시작-->
+            <li data-target="#demo" data-slide-to="1"></li>
+            <li data-target="#demo" data-slide-to="2"></li>
+        </ul>
+        <!-- 인디케이터 끝 -->
+    </div>
+</div>
+
+<section>
+    <div class="schedule_month_wrap">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">날짜</th>
+                <th scope="col">시간</th>
+                <th scope="col">경기</th>
+                <th scope="col">중계</th>
+            </tr>
+
+        </table>
+    </div>
+    <rank>
+        <h5>랭킹표 자리</h5>
+    </rank>
+</section>
+
+</body>
+</html>
