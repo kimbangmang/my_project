@@ -100,6 +100,37 @@
             interval: 2000 //기본 5초
         })
 
+         $(document).ready(function () {
+            $("#month_game_list").html("");
+            scheduleList();
+         });
+
+        function scheduleList() {
+            $.ajax({
+                type: "GET",
+                url: "/api/games",
+                data: {},
+                success: function (response) {
+                    console.log(response)
+                    if (response["result"] == "success") {
+                        let data = response['data']
+                        for (let i = 0; i < data.length; i++) {
+                            let gameDate = data[i]['gameDate'];
+                            let homeTeamName = data[i]['homeTeamName']
+                            let homeTeamScore = data[i]['homeTeamScore']
+                            let awayTeamScore = data[i]['awayTeamScore']
+                            let awayTeamName = data[i]['awayTeamName']
+                            let temp = `<tr class="schedule_info">
+                                            <th scope="col" class="time">${gameDate}</th>
+                                            <th scope="col" class="games">${homeTeamName}, ${homeTeamScore}, ${awayTeamScore}, ${awayTeamName}</th>
+                                        </tr>`
+                            $('#month_game_list').append(temp)
+                        }
+                    }
+                }
+            })
+        }
+
     </script>
 </head>
 
@@ -172,12 +203,17 @@
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">날짜</th>
-                <th scope="col">시간</th>
+                <th scope="col">날짜/시간</th>
                 <th scope="col">경기</th>
-                <th scope="col">중계</th>
             </tr>
-
+            </thead>
+            <tbody>
+            <tbody id="month_game_list">
+                <tr class="schedule_info">
+                <th scope="col" class="time">tt123</th>
+                <th scope="col" class="games">tt456</th>
+                </tr>
+            </tbody>
         </table>
     </div>
     <rank>
