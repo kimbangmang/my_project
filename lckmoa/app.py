@@ -55,6 +55,7 @@ def rank_get():
     soup = BeautifulSoup(data.text, 'html.parser')
 
     ranking_chart = soup.select('#main_pack > div.sc_new.cs_common_module.case_normal._kgs_esports.color_7 > div.cm_content_wrap > div > div > div > div > div > div > table > tbody > tr')
+    result = []
 
     for ranking_chart in ranking_chart:
         a = ranking_chart.select_one('td > span')
@@ -78,8 +79,8 @@ def rank_get():
 
             result.append(doc)
             print(number, teamName, win, loss, winningRate, point)
-        print(result)
-        return jsonify({'result': 'success', 'data': result})
+    print(result)
+    return jsonify({'result': 'success', 'data': result})
 
 
 if __name__ == '__main__':
