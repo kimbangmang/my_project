@@ -12,8 +12,8 @@
     <!-- 캐러셀 -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
             integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
@@ -27,7 +27,6 @@
     <!-- 구글폰트 -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
-
 
 
     <style>
@@ -75,6 +74,7 @@
         }
 
         section {
+            padding-top: 20px;
             background-color: bisque;
             height: calc(100vh - 60px); /* 남은 여백만큼 높이 주기 */
             display: flex; /* flex-container */
@@ -82,14 +82,30 @@
         }
 
         .schedule_month_wrap {
-            width: calc(100vw - 300px); /* 나머지를 폭으로 주기 */
-            display: flex; /
-            flex-direction: row; /* 정렬 방향 */
+            width: calc(100vw - 30%); /* 나머지를 폭으로 주기 */
+            display: flex;
+        / flex-direction: row; /* 정렬 방향 */
             /*flex-wrap: wrap; !* 넘치면 다음 줄로 내려가기 *!*/
             justify-content: flex-start; /* 적절히 공간을 배치 */
             background-color: white;
         }
 
+        .games {
+            text-align: center;
+        }
+
+        .game {
+            text-align: center;
+        }
+
+        .rank_wrap {
+            width: calc(100vw - 70%);
+            display: flex;
+            justify-content: flex-start;
+            background-color: white;
+            border: solid;
+            border-color: grey;
+        }
 
 
     </style>
@@ -100,10 +116,10 @@
             interval: 2000 //기본 5초
         })
 
-         $(document).ready(function () {
+        $(document).ready(function () {
             $("#month_game_list").html("");
             scheduleList();
-         });
+        });
 
         function scheduleList() {
             $.ajax({
@@ -116,15 +132,52 @@
                         let data = response['data']
                         for (let i = 0; i < data.length; i++) {
                             let gameDate = data[i]['gameDate'];
+                            let gameTime = data[i]['gameTime'];
                             let homeTeamName = data[i]['homeTeamName']
                             let homeTeamScore = data[i]['homeTeamScore']
                             let awayTeamScore = data[i]['awayTeamScore']
                             let awayTeamName = data[i]['awayTeamName']
                             let temp = `<tr class="schedule_info">
-                                            <th scope="col" class="time">${gameDate}</th>
-                                            <th scope="col" class="games">${homeTeamName}, ${homeTeamScore}, ${awayTeamScore}, ${awayTeamName}</th>
+                                            <th scope="col" class="date">${gameDate}</th>
+                                            <th scope="col" class="time">${gameTime}</th>
+                                            <th scope="col" class="games"> ${homeTeamName} ${homeTeamScore} : ${awayTeamScore} ${awayTeamName} </th>
                                         </tr>`
                             $('#month_game_list').append(temp)
+                        }
+                    }
+                }
+            })
+        }
+
+         $(document).ready(function () {
+            $("#ranking").html("");
+            rankingChart();
+        });
+
+        function rankingChart() {
+            $.ajax({
+                type: "GET",
+                url: "/api/rank",
+                data: {},
+                success: function (response) {
+                    console.log(response)
+                    if (response["result"] == "success") {
+                        let data = response['data']
+                        for (let i = 0; i < data.length; i++) {
+                            let number = data[i]['number'];
+                            let teamName = data[i]['teamName'];
+                            let win = data[i]['win']
+                            let loss = data[i]['loss']
+                            let winningRate = data[i]['winningRate']
+                            let point = data[i]['point']
+                            let temp = `<tr class="ranking_info">
+                                            <th scope="col" class="name">${number} ${teamName}</th>
+                                            <th scope="col" class="win">${win}</th>
+                                            <th scope="col" class="loss">${loss}</th>
+                                            <th scope="col" class="winningRate">${winningRate}</th>
+                                            <th scope="col" class="point">${point}</th>
+                                        </tr>`
+                            $('#ranking').append(temp)
                         }
                     }
                 }
@@ -203,22 +256,47 @@
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">날짜/시간</th>
-                <th scope="col">경기</th>
+                <th scope="col">날짜</th>
+                <th scope="col">시간</th>
+                <th scope="col" class="games">경기</th>
+                <!--                <th scope="col">중계</th>-->
             </tr>
             </thead>
             <tbody>
             <tbody id="month_game_list">
-                <tr class="schedule_info">
-                <th scope="col" class="time">tt123</th>
-                <th scope="col" class="games">tt456</th>
-                </tr>
+            <tr class="schedule_info">
+                <th scope="col" class="date">tt1</th>
+                <th scope="col" class="time">tt1</th>
+                <th scope="col" class="game">tt3</th>
+                <!--                <th scope="col" class="broadcast">tt4</th>-->
+            </tr>
             </tbody>
         </table>
     </div>
-    <rank>
-        <h5>랭킹표 자리</h5>
-    </rank>
+    <div class="rank_wrap">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">순위/팀명</th>
+                <th scope="col">승</th>
+                <th scope="col">패</th>
+                <th scope="col">승률</th>
+                <th scope="col">득실</th>
+                <!--                <th scope="col">중계</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            <tbody id="ranking">
+            <tr class="ranking_info">
+                <th scope="col" class="name">tt1</th>
+                <th scope="col" class="win">tt2</th>
+                <th scope="col" class="loss">tt3</th>
+                <th scope="col" class="winningRate">tt4</th>
+                <th scope="col" class="point">tt5</th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </section>
 
 </body>
