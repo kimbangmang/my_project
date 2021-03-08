@@ -1,6 +1,9 @@
 import requests
 from flask import Flask, render_template, jsonify, request
+from bs4 import BeautifulSoup
+
 app = Flask(__name__)
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -22,21 +25,61 @@ def test_get():
         scheduleList = dailyGroup['scheduleList']
         for schedule in scheduleList:
             gameDate = (schedule['gameStartDate'])
+            gameTime = (schedule['gameStartTime'])
             homeTeamName = (schedule['homeTeamName'])
             awayTeamName = (schedule['awayTeamName'])
             homeTeamScore = (schedule['homeTeamScore'])
             awayTeamScore = (schedule['awayTeamScore'])
+
             doc = {
                 'gameDate': gameDate,
+                'gameTime': gameTime,
                 'homeTeamName': homeTeamName,
                 'awayTeamName': awayTeamName,
                 'homeTeamScore': homeTeamScore,
-                'awayTeamScore': awayTeamScore
+                'awayTeamScore': awayTeamScore,
             }
             result.append(doc)
             print(gameDate, homeTeamName, homeTeamScore, awayTeamName, awayTeamScore)
     print(result)
     return jsonify({'result': 'success', 'data': result})
+
+
+
+@app.route('/api/rank', methods=['GET']) # 팀 순위 보여주기
+def rank_get():
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36'}
+    data = requests.get('https://search.naver.com/search.naver?where=nexearch&sm=tab_etc&mra=bjFE&pkid=475&os=17568053&qvt=0&query=2021%20LoL%20%EC%B1%94%ED%94%BC%EC%96%B8%EC%8A%A4%20%EC%BD%94%EB%A6%AC%EC%95%84%20%EC%8A%A4%ED%94%84%EB%A7%81%20%EC%A0%95%EA%B7%9C%EC%88%9C%EC%9C%84', headers=headers)
+
+    soup = BeautifulSoup(data.text, 'html.parser')
+
+    ranking_chart = soup.select('#main_pack > div.sc_new.cs_common_module.case_normal._kgs_esports.color_7 > div.cm_content_wrap > div > div > div > div > div > div > table > tbody > tr')
+
+    for ranking_chart in ranking_chart:
+        a = ranking_chart.select_one('td > span')
+        if a is not None:
+            number = a.text[0:2].strip()
+            teamName = ranking_chart.select_one('a > span').text
+            win = ranking_chart.select_one('td:nth-child(2) > span').text.strip()
+            loss = ranking_chart.select_one('td:nth-child(3) > span').text.strip()
+            winningRate = ranking_chart.select_one('td:nth-child(4) > span').text.strip()
+            point = ranking_chart.select_one('td:nth-child(5) > span').text.strip()
+
+            doc = {
+                'number': number,
+                'teamName': teamName,
+                'win': win,
+                'loss': loss,
+                'winningRate': winningRate,
+                'point': point,
+
+            }
+
+            result.append(doc)
+            print(number, teamName, win, loss, winningRate, point)
+        print(result)
+        return jsonify({'result': 'success', 'data': result})
 
 
 if __name__ == '__main__':
