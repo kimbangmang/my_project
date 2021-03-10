@@ -38,8 +38,9 @@
             margin: 0; /* 화면 외곽에 여백 없애기 꽉 채우기 */
         }
 
-        nav {
-            background-color: white;
+
+        .page_name {
+            margin: 20px;
             height: 70px;
             font-size: 40px;
             text-align: center;
@@ -48,13 +49,15 @@
 
 
         .menu {
+            margin: 0px;
             display: flex;
             justify-content: space-between;
             flex: 0 0 50px;
-            background: gray;
             font-weight: bold;
-            margin: 0;
-            color: black;
+            border-top: solid;
+            border-bottom: solid;
+            padding: 0px 50px;
+            border-color: lightgray;
         }
 
         .tab {
@@ -67,27 +70,45 @@
         .carousel-item img {
             display: flex;
             width: calc(100vw - 5%);
-            height: calc(100vh - 500px);
-            max-height: calc(100vh - 500px);
+            height: calc(100vh - 400px);
+            max-height: calc(100vh - 400px);
             object-fit: cover;
             overflow: hidden;
         }
 
-        section {
-            padding-top: 20px;
-            background-color: bisque;
+
+        .title_schedule {
+            margin: 20px 0px;
+            text-align: center;
+            font-size: large;
+            font-weight: bold;
+        }
+
+        .title_rank {
+            margin: 20px 0px;
+            text-align: center;
+            font-size: large;
+            font-weight: bold;
+        }
+
+        .info_section {
             height: calc(100vh - 60px); /* 남은 여백만큼 높이 주기 */
             display: flex; /* flex-container */
             flex-direction: row; /* flex-item을 row로 정렬 */
         }
 
+
         .schedule_month_wrap {
+            margin: 0px 20px;
             width: calc(100vw - 30%); /* 나머지를 폭으로 주기 */
             display: flex;
-        / flex-direction: row; /* 정렬 방향 */
+            flex-direction: column; /* 정렬 방향 */
             /*flex-wrap: wrap; !* 넘치면 다음 줄로 내려가기 *!*/
             justify-content: flex-start; /* 적절히 공간을 배치 */
-            background-color: white;
+        }
+
+        #schedule_table {
+            /*border: solid;*/
         }
 
         .games {
@@ -99,12 +120,26 @@
         }
 
         .rank_wrap {
+            margin: 0px 40px;
             width: calc(100vw - 70%);
+            height: fit-content;
             display: flex;
+            flex-direction: column;
             justify-content: flex-start;
-            background-color: white;
-            border: solid;
-            border-color: grey;
+        }
+
+        #rank_table {
+            /*    border: solid;*/
+            /*    border-color: grey;*/
+        }
+
+        .schedule_info .games {
+            display: flex;
+        }
+
+        .schedule_info .games div {
+            width: 33.33%;
+            text-align: center;
         }
 
 
@@ -140,7 +175,11 @@
                             let temp = `<tr class="schedule_info">
                                             <th scope="col" class="date">${gameDate}</th>
                                             <th scope="col" class="time">${gameTime}</th>
-                                            <th scope="col" class="games"> ${homeTeamName} ${homeTeamScore} : ${awayTeamScore} ${awayTeamName} </th>
+                                            <th scope="col" class="games">
+                                                <div>${homeTeamName}</div>
+                                                <div>${homeTeamScore} : ${awayTeamScore}</div>
+                                                <div>${awayTeamName}</div>
+                                            </th>
                                         </tr>`
                             $('#month_game_list').append(temp)
                         }
@@ -149,7 +188,7 @@
             })
         }
 
-         $(document).ready(function () {
+        $(document).ready(function () {
             $("#ranking").html("");
             rankingChart();
         });
@@ -189,19 +228,19 @@
 
 <body>
 <nav>
-    <a class="page_name"> LCK모아 </a>
+    <div class="page_name"> LCK모아</div>
 </nav>
 <ul class="menu">
     <li>
-        <a href="#" class="tab selected">LCK 기사</a>
+        <a href="https://sports.news.naver.com/esports/news/index.nhn?isphoto=N" target="_blank" class="tab selected">LCK 기사</a>
         <!-- 기사 페이지로 넘어가도록 하기 -->
     </li>
     <li>
-        <a href="#" class="tab">구단 정보</a>
+        <a href="#" target="_blank" class="tab">구단 정보</a>
         <!-- 구단 정보 페이지로 넘어가도록 하기 -->
     </li>
     <li>
-        <a href="#" class="tab">하이라이트</a>
+        <a href="https://www.youtube.com/channel/UCw1DsweY9b2AKGjV4kGJP1A" target="_blank" class="tab">하이라이트</a>
         <!-- 하이라이트 영상 페이지로 넘어가도록 하기 -->
     </li>
 </ul>
@@ -251,9 +290,11 @@
     </div>
 </div>
 
-<section>
+
+<section class="info_section">
     <div class="schedule_month_wrap">
-        <table class="table">
+        <div class="title_schedule"> 경기 일정</div>
+        <table class="table" id="schedule_table">
             <thead>
             <tr>
                 <th scope="col">날짜</th>
@@ -273,8 +314,10 @@
             </tbody>
         </table>
     </div>
+
     <div class="rank_wrap">
-        <table class="table">
+        <div class="title_rank"> 순위표</div>
+        <table class="table" id="rank_table">
             <thead>
             <tr>
                 <th scope="col">순위/팀명</th>
