@@ -1,6 +1,8 @@
 import requests
 from flask import Flask, render_template, jsonify, request
 from bs4 import BeautifulSoup
+import googleapiclient.discovery
+from urllib.parse import parse_qs, urlparse
 
 app = Flask(__name__)
 
@@ -81,6 +83,35 @@ def rank_get():
             print(number, teamName, win, loss, winningRate, point)
     print(result)
     return jsonify({'result': 'success', 'data': result})
+
+@app.route('/api/highlight', methods=['GET']) # 유튜브 하이라이트 영상 보여주기
+def highlight_get():
+    # extract playlist id from url
+    url = 'https://www.youtube.com/playlist?list=PLIWtfvmBcNofWeZRz8xxz9ZzVpgocF8rR'
+    query = parse_qs(urlparse(url).query, keep_blank_values=True)
+    playlist_id = query["list"][0]
+
+    print(f'get all playlist items links from {playlist_id}')
+    youtube = googleapiclient.discovery.build("youtube", "v3", developerKey="AIzaSyAVDRkjd0KCHFUr5eZJuZXXs1TfG26hxIQ")
+
+    request = youtube.playlistItems().list(
+        part="snippet",
+        playlistId=playlist_id,
+        maxResults=50
+    )
+    response = request.execute()
+
+    playlist_items = []
+    while request is not None:
+        response = request.execute()
+        playlist_items += response["items"]
+        request = youtube.playlistItems().list_next(request, response)
+
+    print(f"total: {len(playlist_items)}")
+    print([
+        f'https://www.youtube.com/watch?v={t["snippet"]["resourceId"]["videoId"]}&list={playlist_id}&t=0s'
+        for t in playlist_items
+    ])
 
 
 if __name__ == '__main__':
