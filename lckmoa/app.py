@@ -84,6 +84,7 @@ def rank_get():
     print(result)
     return jsonify({'result': 'success', 'data': result})
 
+
 @app.route('/api/highlight', methods=['GET']) # 유튜브 하이라이트 영상 보여주기
 def highlight_get():
     # extract playlist id from url
@@ -97,21 +98,46 @@ def highlight_get():
     request = youtube.playlistItems().list(
         part="snippet",
         playlistId=playlist_id,
-        maxResults=50
+        maxResults=100
     )
-    response = request.execute()
+    result = request.execute()
 
     playlist_items = []
     while request is not None:
-        response = request.execute()
-        playlist_items += response["items"]
-        request = youtube.playlistItems().list_next(request, response)
+        result = request.execute()
+        playlist_items += result["items"]
+        request = youtube.playlistItems().list_next(request, result)
 
-    print(f"total: {len(playlist_items)}")
-    print([
-        f'https://www.youtube.com/watch?v={t["snippet"]["resourceId"]["videoId"]}&list={playlist_id}&t=0s'
-        for t in playlist_items
-    ])
+        for items in playlist_items :
+            snippet = items['snippet']
+
+            thumbnails = snippet['thumbnails']
+            if thumbnails.get('standard'):
+                title = snippet['title']
+                videoId = snippet['resourceId']['videoId']
+                imgUrl = thumbnails['standard']['url']
+
+                # doc = {
+                #     'title': title,
+                #     'videoId': videoId,
+                #     'imgUrl': imgUrl
+                # }
+                #
+                # result.append(doc)
+
+                print(title, videoId, imgUrl)
+        # print(result)
+        return jsonify({'request': 'success', 'data': result})
+
+    # highlight_total = (f"total: {len(playlist_items)}")
+    # highlight_url = [
+    #     f'https://www.youtube.com/watch?v={t["snippet"]["resourceId"]["videoId"]}&list={playlist_id}&t=0s'
+    #     for t in playlist_items]
+    # print( highlight_total, highlight_url)
+
+
+
+
 
 
 if __name__ == '__main__':
