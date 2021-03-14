@@ -38,33 +38,54 @@
             margin: 0; /* 화면 외곽에 여백 없애기 꽉 채우기 */
         }
 
-
-        .page_name {
-            margin: 20px;
-            height: 70px;
-            font-size: 40px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-
-        .menu {
-            margin: 0px;
-            display: flex;
-            justify-content: space-between;
-            flex: 0 0 50px;
-            font-weight: bold;
-            border-top: solid;
-            border-bottom: solid;
-            padding: 0px 50px;
-            border-color: lightgray;
-        }
-
-        .tab {
+        .nav-section .section-header {
+            line-height: 70px;
+            text-transform: uppercase;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
             position: relative;
+            z-index: 10;
+        }
+
+        .nav-section .section-header > .inner {
+            margin: auto;
+            width: calc(100%);
+        }
+
+        .nav-section .tabs-nav {
+            list-style: none;
+            border-left: 1px solid rgb(218, 218, 218);
+            float: right;
+            letter-spacing: 1px;
+            -webkit-box-shadow: inset 1px 0 rgb(255, 255, 255);
+            box-shadow: inset 1px 0 rgb(255, 255, 255);
+            padding: 0;
+        }
+
+        .nav-section img {
+            height: 130px;
+            object-fit: cover;
+        }
+
+        .nav-section .tabs-nav {
+            position: relative;
+            top: 50px;
+        }
+
+        .nav-section .tabs-nav li {
+            border-right: 1px solid rgb(218, 218, 218);
+            float: left;
+            position: relative;
+            -webkit-box-shadow: 1px 0 rgb(255, 255, 255);
+            box-shadow: 1px 0 rgb(255, 255, 255);
+
+        }
+
+        .nav-section .tabs-nav a {
             display: block;
-            line-height: 60px;
-            padding: 0 15px;
+            padding: 0 1.36em;
+            position: relative;
+            color: black;
+            font-weight: bold;
         }
 
         .carousel-item img {
@@ -92,9 +113,9 @@
         }
 
         .info_section {
-            height: calc(100vh - 60px); /* 남은 여백만큼 높이 주기 */
-            display: flex; /* flex-container */
-            flex-direction: row; /* flex-item을 row로 정렬 */
+            height: calc(100%);
+            display: flex;
+            flex-direction: row;
         }
 
 
@@ -103,12 +124,7 @@
             width: calc(100vw - 30%); /* 나머지를 폭으로 주기 */
             display: flex;
             flex-direction: column; /* 정렬 방향 */
-            /*flex-wrap: wrap; !* 넘치면 다음 줄로 내려가기 *!*/
             justify-content: flex-start; /* 적절히 공간을 배치 */
-        }
-
-        #schedule_table {
-            /*border: solid;*/
         }
 
         .games {
@@ -128,11 +144,6 @@
             justify-content: flex-start;
         }
 
-        #rank_table {
-            /*    border: solid;*/
-            /*    border-color: grey;*/
-        }
-
         .schedule_info .games {
             display: flex;
         }
@@ -140,6 +151,48 @@
         .schedule_info .games div {
             width: 33.33%;
             text-align: center;
+        }
+
+        .video_wrap {
+            width: 100%;
+            padding-top: 20px;
+            display: flex;
+            flex-wrap: wrap; /* 넘치면 다음 줄로 내려가기 */
+            justify-content: center;
+            text-align: center;
+        }
+
+        .video_wrap .card {
+            display: flex;
+            margin: 10px 20px;
+            width: 25%;
+
+        }
+
+        .btn-primary {
+            background-color: grey;
+            border-color: grey;
+        }
+
+        .news_wrap {
+            width: 100%;
+            padding-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .news_wrap .card {
+            display: flex;
+            margin: 10px 20px;
+            width: 25%;
+
+        }
+
+        .btn-primary {
+            background-color: grey;
+            border-color: grey;
         }
 
 
@@ -223,124 +276,256 @@
             })
         }
 
+        $(document).ready(function () {
+            $("#news").html("");
+            news();
+        });
+
+        function news() {
+            $.ajax({
+                type: "GET",
+                url: "/api/news",
+                data: {},
+                success: function (response) {
+                    console.log(response)
+                    if (response["result"] == "success") {
+                        let data = response['data']
+                        for (let i = 0; i < data.length; i++) {
+                            let newsTitle = data[i]['newsTitle'];
+                            let newsImg = data[i]['newsImg'];
+                            let newsUrl = data[i]['newsUrl'];
+                            let newsText = data[i]['newsText'];
+                            let temp = `<div class="card">
+                                            <img class="card-img-top" src="${newsImg}" alt="Card image cap">
+                                            <div class="card-body">
+                                                <h5 class="card-title">${newsTitle}</h5>
+                                                <p class="card-text">${newsText}</p>
+                                                <a href="${newsUrl}" class="btn btn-primary">기사 더보기</a>
+                                            </div>
+                                        </div>`
+                            $('#news').append(temp)
+                        }
+                    }
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            $("#hl_video").html("");
+            hlVideo();
+        });
+
+        function hlVideo() {
+            $.ajax({
+                type: "GET",
+                url: "/api/highlight",
+                data: {},
+                success: function (response) {
+                    console.log(response)
+                    if (response["request"] == "success") {
+                        let data = response['data']
+                        for (let i = 0; i < data.length; i++) {
+                            let title = data[i]['title'];
+                            let videoImg = data[i]['imgUrl'];
+                            let videoId = data[i]['videoId'];
+                            let temp = `<div class="card">
+                                            <img class="card-img-top" src="${videoImg}" alt="Card image cap">
+                                            <div class="card-body">
+                                                <h5 class="card-title">${title}</h5>
+                                                <a href="https://www.youtube.com/watch?v=${videoId}&list=PLIWtfvmBcNofWeZRz8xxz9ZzVpgocF8rR" class="btn btn-primary">영상 보기</a>
+                                            </div>
+                                        </div>`
+                            $('#hl_video').append(temp)
+                        }
+                    }
+                }
+            })
+        }
+
+        $(function () {
+            var tabAnchor = $('.tabs-nav li'),
+                tabPanel = $('.tabs-panel');
+
+            tabAnchor.click(function (e) {
+                e.preventDefault()
+
+                $(this).find('a').addClass('active');
+                $(this).siblings().find('a').removeClass('active');
+
+                tabPanel.hide();
+
+                var $targetIdx = $(this).index();
+                console.log($targetIdx);
+                tabPanel.eq($targetIdx).show();
+
+            })
+
+            tabAnchor.eq(0).trigger('click');
+
+        })
+
+
     </script>
 </head>
 
 <body>
-<nav>
-    <div class="page_name"> LCK모아</div>
-</nav>
-<ul class="menu">
-    <li>
-        <a href="https://sports.news.naver.com/esports/news/index.nhn?isphoto=N" target="_blank" class="tab selected">LCK 기사</a>
-        <!-- 기사 페이지로 넘어가도록 하기 -->
-    </li>
-    <li>
-        <a href="#" target="_blank" class="tab">구단 정보</a>
-        <!-- 구단 정보 페이지로 넘어가도록 하기 -->
-    </li>
-    <li>
-        <a href="https://www.youtube.com/channel/UCw1DsweY9b2AKGjV4kGJP1A" target="_blank" class="tab">하이라이트</a>
-        <!-- 하이라이트 영상 페이지로 넘어가도록 하기 -->
-    </li>
-</ul>
-
-<div id="demo" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-        <!-- 슬라이드 쇼 -->
-        <div class="carousel-item active">
-            <!--가로-->
-            <img class="d-block w-100"
-                 src="https://img9.yna.co.kr/etc/inner/KR/2019/04/14/AKR20190414019400017_02_i_P4.jpg"
-                 alt="First slide">
-            <div class="carousel-caption d-none d-md-block">
+<header>
+    <section class="nav-section" id="nav">
+        <header class="section-header clearfix">
+            <div class="inner">
+                <!--                <h2>LCKMOA</h2>-->
+                <img src="static/title1.png">
+                <ul class="tabs-nav">
+                    <li><a href="#">Main</a></li>
+                    <li><a href="#">LCK 기사</a></li>
+                    <li><a href="#">구단 정보</a></li>
+                    <li><a href="#">하이라이트</a></li>
+                </ul>
             </div>
-        </div>
-        <div class="carousel-item">
-            <img class="d-block w-100"
-                 src="https://image.fmkorea.com/files/attach/new/20201101/14339012/47592066/3175559973/755ff91e0b08ea642400c0d3720a3e34.jpg"
-                 alt="Second slide">
-        </div>
-        <div class="carousel-item">
-            <img class="d-block w-100"
-                 src="https://pbs.twimg.com/media/DIkdi1dVoAARMXe.jpg"
-                 alt="Third slide">
-        </div>
-        <!-- / 슬라이드 쇼 끝 -->
+        </header>
+    </section>
+</header>
+<main>
+    <section class="tabs-section">
+        <section class="tabs-panel">
+            <div id="demo" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <!-- 슬라이드 쇼 -->
+                    <div class="carousel-item active">
+                        <!--가로-->
+                        <img class="d-block w-100"
+                             src="https://img9.yna.co.kr/etc/inner/KR/2019/04/14/AKR20190414019400017_02_i_P4.jpg"
+                             alt="First slide">
+                        <div class="carousel-caption d-none d-md-block">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100"
+                             src="https://image.fmkorea.com/files/attach/new/20201101/14339012/47592066/3175559973/755ff91e0b08ea642400c0d3720a3e34.jpg"
+                             alt="Second slide">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100"
+                             src="https://pbs.twimg.com/media/DIkdi1dVoAARMXe.jpg"
+                             alt="Third slide">
+                    </div>
+                    <!-- / 슬라이드 쇼 끝 -->
 
-        <!-- 왼쪽 오른쪽 화살표 버튼 -->
-        <a class="carousel-control-prev" href="#demo" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <!-- <span>Previous</span> -->
-        </a>
-        <a class="carousel-control-next" href="#demo" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <!-- <span>Next</span> -->
-        </a>
-        <!-- / 화살표 버튼 끝 -->
+                    <!-- 왼쪽 오른쪽 화살표 버튼 -->
+                    <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <!-- <span>Previous</span> -->
+                    </a>
+                    <a class="carousel-control-next" href="#demo" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <!-- <span>Next</span> -->
+                    </a>
+                    <!-- / 화살표 버튼 끝 -->
 
-        <!-- 인디케이터 -->
-        <ul class="carousel-indicators">
-            <li data-target="#demo" data-slide-to="0" class="active"></li>
-            <!--0번부터시작-->
-            <li data-target="#demo" data-slide-to="1"></li>
-            <li data-target="#demo" data-slide-to="2"></li>
-        </ul>
-        <!-- 인디케이터 끝 -->
-    </div>
-</div>
+                    <!-- 인디케이터 -->
+                    <ul class="carousel-indicators">
+                        <li data-target="#demo" data-slide-to="0" class="active"></li>
+                        <!--0번부터시작-->
+                        <li data-target="#demo" data-slide-to="1"></li>
+                        <li data-target="#demo" data-slide-to="2"></li>
+                    </ul>
+                    <!-- 인디케이터 끝 -->
+                </div>
+            </div>
+            <section class="info_section">
+                <div class="schedule_month_wrap">
+                    <div class="title_schedule"> 경기 일정</div>
+                    <table class="table" id="schedule_table">
+                        <thead>
+                        <tr>
+                            <th scope="col">날짜</th>
+                            <th scope="col">시간</th>
+                            <th scope="col" class="games">경기</th>
+                            <!--                <th scope="col">중계</th>-->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tbody id="month_game_list">
+                        <tr class="schedule_info">
+                            <th scope="col" class="date">tt1</th>
+                            <th scope="col" class="time">tt1</th>
+                            <th scope="col" class="game">tt3</th>
+                            <!--                <th scope="col" class="broadcast">tt4</th>-->
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
+                <div class="rank_wrap">
+                    <div class="title_rank"> 순위표</div>
+                    <table class="table" id="rank_table">
+                        <thead>
+                        <tr>
+                            <th scope="col">순위/팀명</th>
+                            <th scope="col">승</th>
+                            <th scope="col">패</th>
+                            <th scope="col">승률</th>
+                            <th scope="col">득실</th>
+                            <!--                <th scope="col">중계</th>-->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tbody id="ranking">
+                        <tr class="ranking_info">
+                            <th scope="col" class="name">tt1</th>
+                            <th scope="col" class="win">tt2</th>
+                            <th scope="col" class="loss">tt3</th>
+                            <th scope="col" class="winningRate">tt4</th>
+                            <th scope="col" class="point">tt5</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
-<section class="info_section">
-    <div class="schedule_month_wrap">
-        <div class="title_schedule"> 경기 일정</div>
-        <table class="table" id="schedule_table">
-            <thead>
-            <tr>
-                <th scope="col">날짜</th>
-                <th scope="col">시간</th>
-                <th scope="col" class="games">경기</th>
-                <!--                <th scope="col">중계</th>-->
-            </tr>
-            </thead>
-            <tbody>
-            <tbody id="month_game_list">
-            <tr class="schedule_info">
-                <th scope="col" class="date">tt1</th>
-                <th scope="col" class="time">tt1</th>
-                <th scope="col" class="game">tt3</th>
-                <!--                <th scope="col" class="broadcast">tt4</th>-->
-            </tr>
-            </tbody>
-        </table>
-    </div>
+        </section>
+        <section class="tabs-panel">
+            <div class="news_wrap" id="news">
+                <div class="card">
+                    <img class="card-img-top" src="..." alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the card's content.</p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="tabs-panel">
+            <div class="team_wrap">
+            </div>
+        </section>
+        <section class="tabs-panel">
+            <div class="video_wrap" id="hl_video">
+                <div class="card">
+                    <img class="card-img-top" src="https://i.ytimg.com/vi/qy0mQK844oI/maxresdefault.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">title 자리</h5>
+                        <a href="https://www.youtube.com/watch?v=qnLz3g0JqO0&list=PLIWtfvmBcNofWeZRz8xxz9ZzVpgocF8rR&t=0s"
+                           class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img class="card-img-top" src="https://i.ytimg.com/vi/qy0mQK844oI/maxresdefault.jpg"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">title 자리</h5>
+                        <a href="https://www.youtube.com/watch?v=qnLz3g0JqO0&list=PLIWtfvmBcNofWeZRz8xxz9ZzVpgocF8rR&t=0s"
+                           class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
 
-    <div class="rank_wrap">
-        <div class="title_rank"> 순위표</div>
-        <table class="table" id="rank_table">
-            <thead>
-            <tr>
-                <th scope="col">순위/팀명</th>
-                <th scope="col">승</th>
-                <th scope="col">패</th>
-                <th scope="col">승률</th>
-                <th scope="col">득실</th>
-                <!--                <th scope="col">중계</th>-->
-            </tr>
-            </thead>
-            <tbody>
-            <tbody id="ranking">
-            <tr class="ranking_info">
-                <th scope="col" class="name">tt1</th>
-                <th scope="col" class="win">tt2</th>
-                <th scope="col" class="loss">tt3</th>
-                <th scope="col" class="winningRate">tt4</th>
-                <th scope="col" class="point">tt5</th>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</section>
+</main>
 
 </body>
 </html>
