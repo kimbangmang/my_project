@@ -42,8 +42,8 @@ def test_get():
                 'awayTeamScore': awayTeamScore,
             }
             result.append(doc)
-            print(gameDate, homeTeamName, homeTeamScore, awayTeamName, awayTeamScore)
-    print(result)
+    #         print(gameDate, homeTeamName, homeTeamScore, awayTeamName, awayTeamScore)
+    # print(result)
     return jsonify({'result': 'success', 'data': result})
 
 
@@ -80,8 +80,44 @@ def rank_get():
             }
 
             result.append(doc)
-            print(number, teamName, win, loss, winningRate, point)
-    print(result)
+            # print(number, teamName, win, loss, winningRate, point)
+    # print(result)
+    return jsonify({'result': 'success', 'data': result})
+
+
+@app.route('/api/news', methods=['GET']) # 뉴스 보여주기
+def news_get():
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36'}
+    data = requests.get('https://search.naver.com/search.naver?where=news&sm=tab_jum&query=LCK', headers=headers)
+
+    soup = BeautifulSoup(data.text, 'html.parser')
+
+    newsList = soup.select('#main_pack > section > div > div.group_news > ul > li')
+
+    print(newsList)
+    result = []
+
+    for newsList in newsList:
+        a = newsList.select_one('div')
+        if a is not None:
+            newsTitle = newsList.select_one('div.news_area > a').text.strip()
+            newsText = newsList.select_one('div.dsc_wrap > a').text.strip()
+            newsImg = newsList.select_one('div.news_wrap > a > img')['src']
+            newsUrl = newsList.select_one('div.news_area > a')['href']
+
+
+
+            doc = {
+                'newsTitle': newsTitle,
+                'newsText': newsText,
+                'newsImg': newsImg,
+                'newsUrl': newsUrl
+            }
+
+            result.append(doc)
+            # print(newsTitle, newsText, newsImg, newsUrl)
+
     return jsonify({'result': 'success', 'data': result})
 
 
@@ -98,7 +134,7 @@ def highlight_get():
     request = youtube.playlistItems().list(
         part="snippet",
         playlistId=playlist_id,
-        maxResults=100
+        maxResults=50
     )
     result = request.execute()
 
@@ -108,6 +144,7 @@ def highlight_get():
         playlist_items += result["items"]
         request = youtube.playlistItems().list_next(request, result)
 
+        result = []
         for items in playlist_items :
             snippet = items['snippet']
 
@@ -117,28 +154,16 @@ def highlight_get():
                 videoId = snippet['resourceId']['videoId']
                 imgUrl = thumbnails['standard']['url']
 
-                # doc = {
-                #     'title': title,
-                #     'videoId': videoId,
-                #     'imgUrl': imgUrl
-                # }
-                #
-                # result.append(doc)
+                doc = {'title': title,'videoId': videoId,'imgUrl': imgUrl}
 
-                print(title, videoId, imgUrl)
-        # print(result)
+                doc['title'] = title
+                doc['videoId'] = videoId
+                doc['imgUrl'] = imgUrl
+
+                # print(title, videoId, imgUrl)
+                result.append(doc)
+                # print(doc)
         return jsonify({'request': 'success', 'data': result})
-
-    # highlight_total = (f"total: {len(playlist_items)}")
-    # highlight_url = [
-    #     f'https://www.youtube.com/watch?v={t["snippet"]["resourceId"]["videoId"]}&list={playlist_id}&t=0s'
-    #     for t in playlist_items]
-    # print( highlight_total, highlight_url)
-
-
-
-
-
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
