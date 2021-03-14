@@ -22,7 +22,10 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
 
-    <title>LCK 모아</title>
+    <title>LCK MOA</title>
+    <meta property="og:title" content="LCK MOA" />
+    <meta property="og:description" content="원하는 LCK 정보만 모아 놓은 사이트입니다" />
+    <meta property="og:image" content="{{ url_for('static', filename='title1.png') }}" />
 
     <!-- 구글폰트 -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -300,7 +303,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title">${newsTitle}</h5>
                                                 <p class="card-text">${newsText}</p>
-                                                <a href="${newsUrl}" class="btn btn-primary">기사 더보기</a>
+                                                <a href="${newsUrl}.blank" target="_blank" class="btn btn-primary">기사 더보기</a>
                                             </div>
                                         </div>`
                             $('#news').append(temp)
@@ -332,7 +335,7 @@
                                             <img class="card-img-top" src="${videoImg}" alt="Card image cap">
                                             <div class="card-body">
                                                 <h5 class="card-title">${title}</h5>
-                                                <a href="https://www.youtube.com/watch?v=${videoId}&list=PLIWtfvmBcNofWeZRz8xxz9ZzVpgocF8rR" class="btn btn-primary">영상 보기</a>
+                                                <a href="https://www.youtube.com/watch?v=${videoId}&list=PLIWtfvmBcNofWeZRz8xxz9ZzVpgocF8rR" target="_blank" class="btn btn-primary">영상 보기</a>
                                             </div>
                                         </div>`
                             $('#hl_video').append(temp)
